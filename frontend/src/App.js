@@ -1,19 +1,50 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Nav from './components/nav';
 
 function App() {
-  const homeRef = useRef(null)
-  const educationRef = useRef(null)
-  const workRef = useRef(null)
-  const portofolioRef = useRef(null)
+  const [education, setEducation] = useState([])
+  const [work, setWork] = useState([])
+  const [portofolio, setPortofolio] = useState([])
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const homeRef = useRef(null);
+  const educationRef = useRef(null);
+  const workRef = useRef(null);
+  const portofolioRef = useRef(null);
+
+  const getData = async () => {
+    const educationResponse = await fetch('/education')
+    const educationData = await educationResponse.json()
+    setEducation(educationData)
+    
+    const workResponse = await fetch('/work')
+    const workData = await workResponse.json()
+    setWork(workData)
+
+    const portofolioResponse = await fetch('/portofolio')
+    const portofolioData = await portofolioResponse.json()
+    setPortofolio(portofolioData)
+    
+  }
 
   return (
     <>
-      <Nav homeRef={homeRef} educationRef={educationRef} workRef={workRef} portofolioRef={portofolioRef} />
-     
-      <div className='md:h-screen pt-10' ref={homeRef}>
+      <Nav
+        homeRef={homeRef}
+        educationRef={educationRef}
+        workRef={workRef}
+        portofolioRef={portofolioRef}
+      />
+
+      <div
+        className='md:h-screen pt-10'
+        ref={homeRef}
+      >
         <div className='md:w-2/4 w-10/12 mx-auto mt-10 mb-3'>
           <h1 className='text-5xl mb-3'>Test Tester</h1>
           <p className='text-2xl text-cyan-900 ml-2'>Software Engineer</p>
@@ -22,7 +53,7 @@ function App() {
         <div className='flex md:flex-row flex-col space-between md:w-2/4 m-auto py-5 border rounded-sm px-3 shadow'>
           <img
             alt='profile'
-            className='rounded-full w-64 h-64 mx-8'
+            className='rounded-full w-64 md:h-64 mx-5'
             src='./me.jpg'
           />
           <div>
@@ -45,66 +76,38 @@ function App() {
         </div>
       </div>
 
-      <div className='md:h-screen pt-16' ref={educationRef}>
+      <div
+        className='md:h-screen pt-16'
+        ref={educationRef}
+      >
         <div className='mb-5 mx-5'>
-          <h1 className='text-5xl mb-3'>My Education</h1>
+          <h1 className='text-5xl mb-3 key={education.id}'>My Education</h1>
           <p className='text-lg text-cyan-900'>
             Here is the education that I have received
           </p>
         </div>
 
         <div className='grid md:grid-cols-3 grid-cols-1 gap-4 mx-5'>
-          <div className='border rounded-sm p-3 shadow'>
-            <h3 className='text-lg border-b-2 border-slate-300 text-slate-800'>
-              School, Computer Science
-            </h3>
-            <h5 className='py-2'>2016 - 2020</h5>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut eu
-              sem integer vitae justo eget magna fermentum. At volutpat diam ut
-              venenatis tellus. Id consectetur purus ut faucibus pulvinar
-              elementum integer enim. Aliquam nulla facilisi cras fermentum odio
-              eu feugiat. Mollis nunc sed id semper risus in. Metus dictum at
-              tempor commodo.
-            </p>
-          </div>
-
-          <div className='border rounded-sm p-3 shadow'>
-            <h3 className='text-lg border-b-2 border-slate-300 text-slate-800'>
-              School, Computer Science
-            </h3>
-            <h5 className='py-2'>2016 - 2020</h5>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut eu
-              sem integer vitae justo eget magna fermentum. At volutpat diam ut
-              venenatis tellus. Id consectetur purus ut faucibus pulvinar
-              elementum integer enim. Aliquam nulla facilisi cras fermentum odio
-              eu feugiat. Mollis nunc sed id semper risus in. Metus dictum at
-              tempor commodo.
-            </p>
-          </div>
-
-          <div className='border rounded-sm p-3 shadow'>
-            <h3 className='text-lg border-b-2 border-slate-300 text-slate-800'>
-              School, Computer Science
-            </h3>
-            <h5 className='py-2'>2016 - 2020</h5>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut eu
-              sem integer vitae justo eget magna fermentum. At volutpat diam ut
-              venenatis tellus. Id consectetur purus ut faucibus pulvinar
-              elementum integer enim. Aliquam nulla facilisi cras fermentum odio
-              eu feugiat. Mollis nunc sed id semper risus in. Metus dictum at
-              tempor commodo.
-            </p>
-          </div>
+          {education &&
+            education.map((e) => (
+              <div
+                key={e.id}
+                className='border rounded-sm p-3 shadow'
+              >
+                <h3 className='text-lg border-b-2 border-slate-300 text-slate-800'>
+                  {e.school}, {e.degree}
+                </h3>
+                <h5 className='py-2'>{e.years}</h5>
+                <p>{e.description}</p>
+              </div>
+            ))}
         </div>
       </div>
 
-      <div className='md:h-screen pt-16' ref={workRef}>
+      <div
+        className='md:h-screen pt-16'
+        ref={workRef}
+      >
         <div className='mb-5 mx-5'>
           <h1 className='text-5xl mb-3'>My Work Experience</h1>
           <p className='text-lg text-cyan-900'>
@@ -113,57 +116,26 @@ function App() {
         </div>
 
         <div className='grid md:grid-cols-3 grid-cols-1 gap-4 mx-5'>
-          <div className='border rounded-sm p-3 shadow'>
-            <h3 className='text-lg border-b-2 border-slate-300 text-slate-800'>
-              Company, Software Engineer
-            </h3>
-            <h5 className='py-2'>2016 - 2020</h5>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut eu
-              sem integer vitae justo eget magna fermentum. At volutpat diam ut
-              venenatis tellus. Id consectetur purus ut faucibus pulvinar
-              elementum integer enim. Aliquam nulla facilisi cras fermentum odio
-              eu feugiat. Mollis nunc sed id semper risus in. Metus dictum at
-              tempor commodo.
-            </p>
-          </div>
-
-          <div className='border rounded-sm p-3 shadow'>
-            <h3 className='text-lg border-b-2 border-slate-300 text-slate-800'>
-              Company, Software Engineer
-            </h3>
-            <h5 className='py-2'>2016 - 2020</h5>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut eu
-              sem integer vitae justo eget magna fermentum. At volutpat diam ut
-              venenatis tellus. Id consectetur purus ut faucibus pulvinar
-              elementum integer enim. Aliquam nulla facilisi cras fermentum odio
-              eu feugiat. Mollis nunc sed id semper risus in. Metus dictum at
-              tempor commodo.
-            </p>
-          </div>
-
-          <div className='border rounded-sm p-3 shadow'>
-            <h3 className='text-lg border-b-2 border-slate-300 text-slate-800'>
-              Company, Software Engineer
-            </h3>
-            <h5 className='py-2'>2016 - 2020</h5>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut eu
-              sem integer vitae justo eget magna fermentum. At volutpat diam ut
-              venenatis tellus. Id consectetur purus ut faucibus pulvinar
-              elementum integer enim. Aliquam nulla facilisi cras fermentum odio
-              eu feugiat. Mollis nunc sed id semper risus in. Metus dictum at
-              tempor commodo.
-            </p>
-          </div>
+          {work &&
+            work.map((w) => (
+              <div
+                key={w.id}
+                className='border rounded-sm p-3 shadow'
+              >
+                <h3 className='text-lg border-b-2 border-slate-300 text-slate-800'>
+                  {w.company}, {w.job_title}
+                </h3>
+                <h5 className='py-2'>{w.years}</h5>
+                <p>{w.description}</p>
+              </div>
+            ))}
         </div>
       </div>
 
-      <div className='md:h-screen pt-16' ref={portofolioRef}>
+      <div
+        className='md:h-screen pt-16'
+        ref={portofolioRef}
+      >
         <div className='mb-5 mx-5'>
           <h1 className='text-5xl mb-3'>My Portfolio</h1>
           <p className='text-lg text-cyan-900'>
@@ -173,59 +145,21 @@ function App() {
         </div>
 
         <div className='grid md:grid-cols-3 grid-cols-1 gap-4 mx-5'>
-          <div className='border rounded-sm p-3 shadow'>
-            <h3 className='text-lg border-b-2 border-slate-300 text-slate-800'>
-              Title
-            </h3>
-            <h5 className='py-2 text-blue-500 hover:text-blue-700 transition cursor-pointer'>
-              View Code
-            </h5>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut eu
-              sem integer vitae justo eget magna fermentum. At volutpat diam ut
-              venenatis tellus. Id consectetur purus ut faucibus pulvinar
-              elementum integer enim. Aliquam nulla facilisi cras fermentum odio
-              eu feugiat. Mollis nunc sed id semper risus in. Metus dictum at
-              tempor commodo.
-            </p>
-          </div>
-
-          <div className='border rounded-sm p-3 shadow'>
-            <h3 className='text-lg border-b-2 border-slate-300 text-slate-800'>
-              Title
-            </h3>
-            <h5 className='py-2 text-blue-500 hover:text-blue-700 transition cursor-pointer'>
-              View Code
-            </h5>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut eu
-              sem integer vitae justo eget magna fermentum. At volutpat diam ut
-              venenatis tellus. Id consectetur purus ut faucibus pulvinar
-              elementum integer enim. Aliquam nulla facilisi cras fermentum odio
-              eu feugiat. Mollis nunc sed id semper risus in. Metus dictum at
-              tempor commodo.
-            </p>
-          </div>
-
-          <div className='border rounded-sm p-3 shadow'>
-            <h3 className='text-lg border-b-2 border-slate-300 text-slate-800'>
-              Title
-            </h3>
-            <h5 className='py-2 text-blue-500 hover:text-blue-700 transition cursor-pointer'>
-              View Code
-            </h5>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut eu
-              sem integer vitae justo eget magna fermentum. At volutpat diam ut
-              venenatis tellus. Id consectetur purus ut faucibus pulvinar
-              elementum integer enim. Aliquam nulla facilisi cras fermentum odio
-              eu feugiat. Mollis nunc sed id semper risus in. Metus dictum at
-              tempor commodo.
-            </p>
-          </div>
+          {portofolio &&
+            portofolio.map((p) => (
+              <div key={p.id}
+              className='border rounded-sm p-3 shadow'>
+                <h3 className='text-lg border-b-2 border-slate-300 text-slate-800'>
+                  {p.title}
+                </h3>
+                <a className='py-2 text-blue-500 hover:text-blue-700 transition cursor-pointer' href={p.url}>
+                  View Code
+                </a>
+                <p>
+                  {p.description}
+                </p>
+              </div>
+            ))}
         </div>
       </div>
     </>

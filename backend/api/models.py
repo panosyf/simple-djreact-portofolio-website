@@ -9,6 +9,7 @@ class Education(models.Model):
 
 class Work(models.Model):
     company = models.CharField(max_length=255)
+    job_title = models.CharField(max_length=255)
     years = models.CharField(max_length=25)
     description = models.TextField(blank=True)
     ordinal = models.IntegerField()
